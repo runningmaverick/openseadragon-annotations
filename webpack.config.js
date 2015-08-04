@@ -12,7 +12,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                loader: 'webpack-traceur'
+                loader: 'webpack-traceur?experimental'
             }
         ]
     }
