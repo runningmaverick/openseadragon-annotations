@@ -28,11 +28,10 @@
     "openseadragon"
   ],
   "devDependencies": {
-    "babel-core": "^5.8.20",
-    "babel-loader": "^5.3.2",
     "chai": "^3.2.0",
     "chai-as-promised": "^5.1.0",
     "copyfiles": "^0.2.1",
+    "di2": "^2.0.0",
     "extend": "^3.0.0",
     "imagemin": "^3.2.0",
     "karma": "^0.13.3",
@@ -50,7 +49,8 @@
     "sinon": "^1.15.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "^1.10.5"
+    "webpack": "^1.10.5",
+    "webpack-traceur-loader": "^0.3.0"
   },
   "homepage": "https://github.com/Emigre/openseadragon-annotations",
   "dependencies": {
