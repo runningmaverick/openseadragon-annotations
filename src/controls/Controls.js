@@ -10,6 +10,12 @@ export default class Controls extends OpenSeadragon.EventSource {
   initialize(viewer, options) {
     var options = options || {};
     this.viewer = viewer;
+    viewer.addHandler('zoom', function(e) { 
+			var width = 0.5;
+			var paths = document.getElementsByTagName('path');
+			if (paths.length > 0)
+				paths[0].setAttribute("stroke-width", width/e.zoom)
+		})
     if (options.controls) { options.controls.forEach(this.add.bind(this)); }
     return this;
   }
