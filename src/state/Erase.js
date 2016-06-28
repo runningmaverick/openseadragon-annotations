@@ -1,5 +1,7 @@
 import OpenSeadragon from 'OpenSeadragon';
 
+import eraseCursor from '../../img/erase_cursor.png';
+
 export default class Erase {
 
   constructor(overlay) {
@@ -47,6 +49,7 @@ export default class Erase {
 
   initialize() {
     console.log("erase")
+    $("svg").css("cursor", 'url('+eraseCursor+') 13 9, auto')
     this._mouseTracker = function (e) {
       var offsetX = e.clientX - this.rect.left,
 					offsetY = e.clientY - this.rect.top;

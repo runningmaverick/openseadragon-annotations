@@ -7,6 +7,7 @@ export default class Draw {
   }
 
   initialize() {
+    $("svg").css("cursor", "auto");
     this._mouseTracker = function (e) {
       var offsetX = e.clientX - this.rect.left,
 					offsetY = e.clientY - this.rect.top;
