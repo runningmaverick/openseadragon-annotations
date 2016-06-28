@@ -8,10 +8,16 @@ import moveHover from '../../img/move_hover.png';
 import movePressed from '../../img/move_pressed.png';
 import moveRest from '../../img/move_rest.png';
 
+import eraseGroupHover from '../../img/erase_grouphover.png';
+import eraseHover from '../../img/erase_hover.png';
+import erasePressed from '../../img/erase_pressed.png';
+import eraseRest from '../../img/erase_rest.png';
+
 export default class Annotations {
 
-  constructor(controls, overlay, draw, move) {
+  constructor(controls, overlay, draw, erase, move) {
     this.draw = draw;
+    this.erase = erase;
     this.move = move;
     this.overlay = overlay;
     this.controls = controls;
@@ -37,6 +43,14 @@ export default class Annotations {
           srcGroup: drawGroupHover,
           srcHover: drawHover,
           srcDown: drawPressed
+        },
+        {
+          name: 'erase',
+          action: setState.bind(null, this, this.erase),
+          srcRest: eraseRest,
+          srcGroup: eraseGroupHover,
+          srcHover: eraseHover,
+          srcDown: erasePressed
         }
       ]
     }).activate('move');
