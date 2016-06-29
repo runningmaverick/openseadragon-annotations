@@ -16,8 +16,7 @@ export default class Draw {
       this.y = offsetY;
     }.bind(this);
     this._onMouseDown = function (e) {
-      var target = e.target || e.srcElement;
-			this.rect = target.getBoundingClientRect();
+			this.rect = this.overlay.svg.getBoundingClientRect();
 			var	offsetX = e.clientX - this.rect.left,
 			    offsetY = e.clientY - this.rect.top;
       this.handleMouseDown(offsetX,offsetY);

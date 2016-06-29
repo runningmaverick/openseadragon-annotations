@@ -51,6 +51,12 @@ export default class Overlay extends OpenSeadragon.EventSource {
     this.svg.appendChild(createLabel(x, y, text))
   }
 
+  addPlaceholder(x,y) {
+    var x = x / this.el.clientWidth * 100;
+    var y = y / this.el.clientHeight * 100;
+    return createPlaceholder(x, y, this.svg)
+  }
+
   distance(x1, y1, x2, y2) {
     return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
   }
@@ -107,3 +113,40 @@ function createOpenSeadragonRect(viewer) {
   var height = viewer.viewport.homeBounds.height;
   return new OpenSeadragon.Rect(0, 0, width, height);
 }
+
+function createPlaceholder(x, y, svg) {
+    var r = 2;
+    x = x*viewer.viewport.getZoom();
+    y = y*viewer.viewport.getZoom();
+    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x);
+    circle.setAttribute('cy', y);
+    circle.setAttribute('r', r);
+    circle.setAttribute('stroke', 'white');
+    circle.setAttribute('fill', 'none');
+    circle.setAttribute('stroke-width', 0.1/viewer.viewport.getZoom());
+    circle.setAttribute('opacity', '0.8');
+    circle.setAttribute('transform', 'scale('+1/viewer.viewport.getZoom()+')')
+    svg.appendChild(circle);
+    circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x);
+    circle.setAttribute('cy', y);
+    circle.setAttribute('r', r*0.9);
+    circle.setAttribute('stroke', 'blue');
+    circle.setAttribute('fill', 'rgb(0,0,255)');
+    circle.setAttribute('stroke-width', 0.1/viewer.viewport.getZoom());
+    circle.setAttribute('opacity', '0.2');
+    circle.setAttribute('transform', 'scale('+1/viewer.viewport.getZoom()+')')
+    svg.appendChild(circle);
+    $(circle).on('mouseenter', function() { this.setAttribute('opacity', "1")});
+    $(circle).on('mouseleave', function() { this.setAttribute('opacity', "0.2")});
+    x = x*3;y = y*3; //to counter scale
+    x = x-2;y = y-4; //to shift it in the center
+    var iletter = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    iletter.setAttribute('stroke', 'white');
+    iletter.setAttribute('d', 'M3 0c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-1.5 2.5c-.83 0-1.5.67-1.5 1.5h1c0-.28.22-.5.5-.5s.5.22.5.5-1 1.64-1 2.5c0 .86.67 1.5 1.5 1.5s1.5-.67 1.5-1.5h-1c0 .28-.22.5-.5.5s-.5-.22-.5-.5c0-.36 1-1.84 1-2.5 0-.81-.67-1.5-1.5-1.5z');
+    iletter.setAttribute('opacity', '0.7');
+    iletter.setAttribute('transform', 'scale('+1/3/viewer.viewport.getZoom()+') translate('+x+','+y+')');
+    svg.appendChild(iletter)
+    return circle;
+  }

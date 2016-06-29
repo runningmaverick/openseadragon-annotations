@@ -18,12 +18,18 @@ import measureHover from '../../img/measure_hover.png';
 import measurePressed from '../../img/measure_pressed.png';
 import measureRest from '../../img/measure_rest.png';
 
+import annotateGroupHover from '../../img/annotate_grouphover.png';
+import annotateHover from '../../img/annotate_hover.png';
+import annotatePressed from '../../img/annotate_pressed.png';
+import annotateRest from '../../img/annotate_rest.png';
+
 export default class Annotations {
 
-  constructor(controls, overlay, draw, erase, measure, move) {
+  constructor(controls, overlay, draw, erase, measure, annotate, move) {
     this.measure = measure;
     this.draw = draw;
     this.erase = erase;
+    this.annotate = annotate;
     this.move = move;
     this.overlay = overlay;
     this.controls = controls;
@@ -56,6 +62,14 @@ export default class Annotations {
           srcGroup: eraseGroupHover,
           srcHover: eraseHover,
           srcDown: erasePressed
+        },
+        {
+          name: 'annotate',
+          action: setState.bind(null, this, this.annotate),
+          srcRest: annotateRest,
+          srcGroup: annotateGroupHover,
+          srcHover: annotateHover,
+          srcDown: annotatePressed
         }];
     if (this.options.showMeasure) {
         controls.push({
