@@ -91,12 +91,13 @@ function createSVG() {
   return svg;
 }
 
-  function createLabel(x, y, text) {
+function createLabel(x, y, text) {
     var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     label.textContent = text;
     label.setAttribute('x', x*viewer.viewport.getZoom());
     label.setAttribute('y', y*viewer.viewport.getZoom());
     label.setAttribute('font-size', 3);
+    label.setAttribute('font-family', 'monospace');
     label.setAttribute('transform', 'scale('+1/viewer.viewport.getZoom()+')')
     return label;
   }
