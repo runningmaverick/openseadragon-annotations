@@ -57,8 +57,8 @@ export default class Measure {
       this._interval = window.setInterval(function () {
         this.overlay.updatePathsEnd(this.path, this.x, this.y);
         var dst = this.overlay.distance(this.x, this.y, this.startX, this.startY);
-        dst = dst/viewer.viewport.getZoom(); 
-        this.label.textContent = dst.toFixed(2);
+        dst = dst/getCurrentPPM();
+        this.label.textContent = prettyPrintDistance(dst);
       }.bind(this), 25);
     }
     return this;
@@ -71,5 +71,30 @@ export default class Measure {
     this.label.remove();
     return this;
   }
+
+}
+
+function prettyPrintDistance(dst) {
+    //distance in meters
+    if (dst >= 1000) {
+        return (dst/1000).toFixed(2) + 'km';
+    } else if (dst >= 1) {
+        return dst.toFixed(2) + 'm';
+    } else if (dst >= 0.001) {
+        return (dst*1000).toFixed(2) + 'mm';
+    } else if (dst >= 0.000001) {
+        return (dst*1000*1000).toFixed(2) + 'um';
+    } else 
+        return (dst*1000*1000*1000).toFixed(2) + 'nm';
+}
+
+// from scalebar plugin
+function getCurrentPPM() {
+    var tiledImage = viewer.world.getItemAt(0);
+    var ratio = tiledImage._scaleSpring.current.value *
+            tiledImage.viewport._containerInnerSize.x /
+            tiledImage.source.dimensions.x;
+    var zoom = ratio * viewer.viewport.getZoom(true);
+    return zoom * viewer.annotations.options.pixelsPerMeter;
 
 }

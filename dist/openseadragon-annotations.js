@@ -101,7 +101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = _OpenSeadragon2.default.Viewer.prototype.initializeAnnotations = function () {
+	exports.default = _OpenSeadragon2.default.Viewer.prototype.initializeAnnotations = function (options) {
 	  var context = new _holyGrail2.default();
 	  context.register('annotations', _Annotations2.default, ['controls', 'overlay', 'draw', 'erase', 'measure', 'move']);
 	  context.register('draw', _Draw2.default, ['overlay']);
@@ -112,6 +112,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  context.registerSingleton('overlay', _Overlay2.default);
 	
 	  this.annotations = this.annotations || context.resolve('annotations');
+	  this.annotations.options = options || {
+	    pixelsPerMeter: 1,
+	    showMeasure: false
+	  };
 	  this.addHandler('open', function () {
 	    this.annotations.initialize.call(this.annotations, this);
 	  }.bind(this));
@@ -286,37 +290,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function initialize(viewer) {
 	      this.viewer = viewer;
 	      this.overlay.initialize(viewer);
-	      this.controls.initialize(viewer, {
-	        controls: [{
-	          name: 'move',
-	          action: setState.bind(null, this, this.move),
-	          srcRest: _move_rest2.default,
-	          srcGroup: _move_grouphover2.default,
-	          srcHover: _move_hover2.default,
-	          srcDown: _move_pressed2.default
-	        }, {
-	          name: 'draw',
-	          action: setState.bind(null, this, this.draw),
-	          srcRest: _draw_rest2.default,
-	          srcGroup: _draw_grouphover2.default,
-	          srcHover: _draw_hover2.default,
-	          srcDown: _draw_pressed2.default
-	        }, {
-	          name: 'erase',
-	          action: setState.bind(null, this, this.erase),
-	          srcRest: _erase_rest2.default,
-	          srcGroup: _erase_grouphover2.default,
-	          srcHover: _erase_hover2.default,
-	          srcDown: _erase_pressed2.default
-	        }, {
+	      var controls = [{
+	        name: 'move',
+	        action: setState.bind(null, this, this.move),
+	        srcRest: _move_rest2.default,
+	        srcGroup: _move_grouphover2.default,
+	        srcHover: _move_hover2.default,
+	        srcDown: _move_pressed2.default
+	      }, {
+	        name: 'draw',
+	        action: setState.bind(null, this, this.draw),
+	        srcRest: _draw_rest2.default,
+	        srcGroup: _draw_grouphover2.default,
+	        srcHover: _draw_hover2.default,
+	        srcDown: _draw_pressed2.default
+	      }, {
+	        name: 'erase',
+	        action: setState.bind(null, this, this.erase),
+	        srcRest: _erase_rest2.default,
+	        srcGroup: _erase_grouphover2.default,
+	        srcHover: _erase_hover2.default,
+	        srcDown: _erase_pressed2.default
+	      }];
+	      if (this.options.showMeasure) {
+	        controls.push({
 	          name: 'measure',
 	          action: setState.bind(null, this, this.measure),
 	          srcRest: _measure_rest2.default,
 	          srcGroup: _measure_grouphover2.default,
 	          srcHover: _measure_hover2.default,
 	          srcDown: _measure_pressed2.default
-	        }]
-	      }).activate('move');
+	        });
+	      }
+	      this.controls.initialize(viewer, { controls: controls }).activate('move');
 	    }
 	  }, {
 	    key: 'import',
@@ -965,6 +971,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      console.log("erase at " + x + "," + y);
 	      var paths = $(this.overlay.svg).find("path");
 	      var toremove = [];
+	      var overlay = this.overlay;
 	      paths.each(function (i, el) {
 	        var $el = $(el);
 	        var points = $el.attr("d").split(" ");
@@ -975,9 +982,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var point2x = points[j + 2].substr(1),
 	              point2y = points[j + 3];
 	          //check if the click occured close to the line connecting the two points
-	          var distto1 = this.overlay.distance(point1x, point1y, clientx, clienty);
-	          var distto2 = this.overlay.distance(point2x, point2y, clientx, clienty);
-	          var dist1to2 = this.overlay.distance(point2x, point2y, point1x, point1y);
+	          var distto1 = overlay.distance(point1x, point1y, clientx, clienty);
+	          var distto2 = overlay.distance(point2x, point2y, clientx, clienty);
+	          var dist1to2 = overlay.distance(point2x, point2y, point1x, point1y);
 	          if (distto1 + distto2 < dist1to2 + 2 * erasedist) {
 	            //console.log("connection erasing at " + clientx + ", " + clienty);
 	            toremove.push(el);
@@ -2818,6 +2825,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  label.setAttribute('x', x * viewer.viewport.getZoom());
 	  label.setAttribute('y', y * viewer.viewport.getZoom());
 	  label.setAttribute('font-size', 3);
+	  label.setAttribute('font-family', 'monospace');
 	  label.setAttribute('transform', 'scale(' + 1 / viewer.viewport.getZoom() + ')');
 	  return label;
 	}
@@ -2919,8 +2927,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._interval = window.setInterval(function () {
 	          this.overlay.updatePathsEnd(this.path, this.x, this.y);
 	          var dst = this.overlay.distance(this.x, this.y, this.startX, this.startY);
-	          dst = dst / viewer.viewport.getZoom();
-	          this.label.textContent = dst.toFixed(2);
+	          dst = dst / getCurrentPPM();
+	          this.label.textContent = prettyPrintDistance(dst);
 	        }.bind(this), 25);
 	      }
 	      return this;
@@ -2939,6 +2947,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 	
 	exports.default = Measure;
+	
+	
+	function prettyPrintDistance(dst) {
+	  //distance in meters
+	  if (dst >= 1000) {
+	    return (dst / 1000).toFixed(2) + 'km';
+	  } else if (dst >= 1) {
+	    return dst.toFixed(2) + 'm';
+	  } else if (dst >= 0.001) {
+	    return (dst * 1000).toFixed(2) + 'mm';
+	  } else if (dst >= 0.000001) {
+	    return (dst * 1000 * 1000).toFixed(2) + 'um';
+	  } else return (dst * 1000 * 1000 * 1000).toFixed(2) + 'nm';
+	}
+	
+	// from scalebar plugin
+	function getCurrentPPM() {
+	  var tiledImage = viewer.world.getItemAt(0);
+	  var ratio = tiledImage._scaleSpring.current.value * tiledImage.viewport._containerInnerSize.x / tiledImage.source.dimensions.x;
+	  var zoom = ratio * viewer.viewport.getZoom(true);
+	  return zoom * viewer.annotations.options.pixelsPerMeter;
+	}
 
 /***/ },
 /* 109 */

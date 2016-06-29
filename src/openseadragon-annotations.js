@@ -8,7 +8,7 @@ import Move from './state/Move';
 import Controls from './controls/Controls';
 import Overlay from './overlay/Overlay';
 
-export default OpenSeadragon.Viewer.prototype.initializeAnnotations = function () {
+export default OpenSeadragon.Viewer.prototype.initializeAnnotations = function (options) {
   var context = new Context();
   context.register('annotations', Annotations, ['controls', 'overlay', 'draw', 'erase', 'measure', 'move']);
   context.register('draw', Draw, ['overlay']);
@@ -19,6 +19,10 @@ export default OpenSeadragon.Viewer.prototype.initializeAnnotations = function (
   context.registerSingleton('overlay', Overlay);
 
   this.annotations = this.annotations || context.resolve('annotations');
+  this.annotations.options = options || {
+    pixelsPerMeter: 1,
+    showMeasure: false 
+  };
   this.addHandler('open', function () {
     this.annotations.initialize.call(this.annotations, this)
   }.bind(this));

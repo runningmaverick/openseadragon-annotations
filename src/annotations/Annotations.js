@@ -32,8 +32,7 @@ export default class Annotations {
   initialize(viewer) {
     this.viewer = viewer;
     this.overlay.initialize(viewer);
-    this.controls.initialize(viewer, {
-      controls: [
+    var controls = [
         {
           name: 'move',
           action: setState.bind(null, this, this.move),
@@ -57,17 +56,18 @@ export default class Annotations {
           srcGroup: eraseGroupHover,
           srcHover: eraseHover,
           srcDown: erasePressed
-        },
-        {
-          name: 'measure',
-          action: setState.bind(null, this, this.measure),
-          srcRest: measureRest,
-          srcGroup: measureGroupHover,
-          srcHover: measureHover,
-          srcDown: measurePressed
-        },
-      ]
-    }).activate('move');
+        }];
+    if (this.options.showMeasure) {
+        controls.push({
+            name: 'measure',
+            action: setState.bind(null, this, this.measure),
+            srcRest: measureRest,
+            srcGroup: measureGroupHover,
+            srcHover: measureHover,
+            srcDown: measurePressed
+          });
+    }
+    this.controls.initialize(viewer, { controls: controls }).activate('move');
   }
 
   import(data) {
