@@ -38,6 +38,23 @@ export default class Overlay extends OpenSeadragon.EventSource {
     path.setAttribute('d', path.getAttribute('d') + ' L' + x + ' ' + y);
   }
 
+  updatePathsEnd(path, x, y) {
+    var coords = path.getAttribute('d').split(' ');
+    var x = x / this.el.clientWidth * 100;
+    var y = y / this.el.clientHeight * 100;
+    path.setAttribute('d', coords[0]+' '+coords[1]+' L'+ x + ' ' + y);
+  }
+
+ addLabel(x, y, text) {
+    var x = x / this.el.clientWidth * 100;
+    var y = y / this.el.clientHeight * 100;
+    this.svg.appendChild(createLabel(x, y, text))
+  }
+
+  distance(x1, y1, x2, y2) {
+    return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+  }
+
 }
 
 function createOverlay() {
@@ -73,6 +90,16 @@ function createSVG() {
   svg.style.cursor = 'default';
   return svg;
 }
+
+  function createLabel(x, y, text) {
+    var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.textContent = text;
+    label.setAttribute('x', x*viewer.viewport.getZoom());
+    label.setAttribute('y', y*viewer.viewport.getZoom());
+    label.setAttribute('font-size', 3);
+    label.setAttribute('transform', 'scale('+1/viewer.viewport.getZoom()+')')
+    return label;
+  }
 
 function createOpenSeadragonRect(viewer) {
   var width = viewer.viewport.homeBounds.width;

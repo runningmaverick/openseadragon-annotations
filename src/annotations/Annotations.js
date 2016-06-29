@@ -13,9 +13,15 @@ import eraseHover from '../../img/erase_hover.png';
 import erasePressed from '../../img/erase_pressed.png';
 import eraseRest from '../../img/erase_rest.png';
 
+import measureGroupHover from '../../img/measure_grouphover.png';
+import measureHover from '../../img/measure_hover.png';
+import measurePressed from '../../img/measure_pressed.png';
+import measureRest from '../../img/measure_rest.png';
+
 export default class Annotations {
 
-  constructor(controls, overlay, draw, erase, move) {
+  constructor(controls, overlay, draw, erase, measure, move) {
+    this.measure = measure;
     this.draw = draw;
     this.erase = erase;
     this.move = move;
@@ -51,7 +57,15 @@ export default class Annotations {
           srcGroup: eraseGroupHover,
           srcHover: eraseHover,
           srcDown: erasePressed
-        }
+        },
+        {
+          name: 'measure',
+          action: setState.bind(null, this, this.measure),
+          srcRest: measureRest,
+          srcGroup: measureGroupHover,
+          srcHover: measureHover,
+          srcDown: measurePressed
+        },
       ]
     }).activate('move');
   }

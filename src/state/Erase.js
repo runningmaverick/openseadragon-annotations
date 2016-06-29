@@ -24,9 +24,9 @@ export default class Erase {
             var point2x = points[j + 2].substr(1),
                 point2y = points[j + 3];
             //check if the click occured close to the line connecting the two points
-            var distto1 = Math.sqrt((point1x - clientx) * (point1x - clientx) + (point1y - clienty) * (point1y - clienty));
-            var distto2 = Math.sqrt((clientx - point2x) * (clientx - point2x) + (clienty - point2y) * (clienty - point2y));
-            var dist1to2 = Math.sqrt((point1x - point2x) * (point1x - point2x) + (point1y - point2y) * (point1y - point2y))
+            var distto1 = this.overlay.distance(point1x, point1y, clientx, clienty);
+            var distto2 = this.overlay.distance(point2x, point2y, clientx, clienty); 
+            var dist1to2 = this.overlay.distance(point2x, point2y, point1x, point1y); 
             if (distto1 + distto2 < dist1to2 + 2*erasedist) {
                 //console.log("connection erasing at " + clientx + ", " + clienty);
                 toremove.push(el);
