@@ -1,7 +1,7 @@
 export default class Move {
 
   initialize() {
-    $("svg").css("cursor", "auto")
+    $("svg").css("cursor", "auto");
     return this;
   }
 

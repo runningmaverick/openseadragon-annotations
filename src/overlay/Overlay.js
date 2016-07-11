@@ -128,25 +128,49 @@ function createPlaceholder(x, y, svg) {
     circle.setAttribute('opacity', '0.8');
     circle.setAttribute('transform', 'scale('+1/viewer.viewport.getZoom()+')')
     svg.appendChild(circle);
-    circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', x);
-    circle.setAttribute('cy', y);
-    circle.setAttribute('r', r*0.9);
-    circle.setAttribute('stroke', 'blue');
-    circle.setAttribute('fill', 'rgb(0,0,255)');
-    circle.setAttribute('stroke-width', 0.1/viewer.viewport.getZoom());
-    circle.setAttribute('opacity', '0.2');
-    circle.setAttribute('transform', 'scale('+1/viewer.viewport.getZoom()+')')
-    svg.appendChild(circle);
-    $(circle).on('mouseenter', function() { this.setAttribute('opacity', "1")});
-    $(circle).on('mouseleave', function() { this.setAttribute('opacity', "0.2")});
+    var circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle2.setAttribute('cx', x);
+    circle2.setAttribute('cy', y);
+    circle2.setAttribute('r', r*0.9);
+    circle2.setAttribute('stroke', 'blue');
+    circle2.setAttribute('fill', 'rgb(0,0,255)');
+    circle2.setAttribute('stroke-width', 0.1);
+    circle2.setAttribute('opacity', '0.2');
+    circle2.setAttribute('transform', 'scale('+1/viewer.viewport.getZoom()+')')
+    circle2.setAttribute('cursor', 'pointer')
+    svg.appendChild(circle2);
     x = x*3;y = y*3; //to counter scale
-    x = x-2;y = y-4; //to shift it in the center
+    x = x-2;y = y-4; //to shift it to the center
     var iletter = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     iletter.setAttribute('stroke', 'white');
+    iletter.setAttribute('stroke-width', 0.5);
     iletter.setAttribute('d', 'M3 0c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-1.5 2.5c-.83 0-1.5.67-1.5 1.5h1c0-.28.22-.5.5-.5s.5.22.5.5-1 1.64-1 2.5c0 .86.67 1.5 1.5 1.5s1.5-.67 1.5-1.5h-1c0 .28-.22.5-.5.5s-.5-.22-.5-.5c0-.36 1-1.84 1-2.5 0-.81-.67-1.5-1.5-1.5z');
     iletter.setAttribute('opacity', '0.7');
     iletter.setAttribute('transform', 'scale('+1/3/viewer.viewport.getZoom()+') translate('+x+','+y+')');
     svg.appendChild(iletter)
-    return circle;
+
+    var newnote = prompt("Specify note for this location");
+    if (newnote === null) { //user cancelled prompt
+      circle.remove();
+      circle2.remove();
+      iletter.remove();
+      return;
+    } 
+    circle2.setAttribute('note', newnote)
+    $(circle2).on('mouseenter', function() { this.setAttribute('opacity', "1"); });
+    $(circle2).on('mouseleave', function() { this.setAttribute('opacity', "0.2")});
+    $(circle2).on('mousedown', function(e) { 
+      var newnote = prompt("Specify note for this location, leave it empty to remove the note", this.getAttribute('note'));
+      if (newnote !== null) //user cancelled prompt 
+        this.setAttribute('note', newnote); 
+      if (newnote === "") {
+        var circle2 = $(this).prev();
+        var iletter = $(this).next();
+        this.remove();
+        circle2.remove();
+        iletter.remove();
+      }
+      e.stopPropagation(); 
+    });
+    return circle2;
   }
