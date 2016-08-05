@@ -7,6 +7,7 @@ const CHANGE_EVENT = 'change';
 
 const data = {
   mode: modes.MOVE,
+  zoom: 1,
   activityInProgress: false,
   annotations: []
 };
@@ -24,6 +25,10 @@ class AppStore extends OpenSeadragon.EventSource {
     return data.mode;
   }
 
+  getZoomLevel() {
+    return data.zoom;
+  }
+
   isActivityInProgress() {
     return data.activityInProgress;
   }
@@ -35,6 +40,10 @@ Dispatcher.register(function (action) {
   switch(action.type) {
     case types.MODE_UPDATE:
       data.mode = action.mode;
+    break;
+
+    case types.ZOOM_UPDATE:
+      data.zoom = action.zoom;
     break;
 
     case types.ACTIVITY_UPDATE:
