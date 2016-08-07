@@ -6,6 +6,12 @@ import { CHANGE_EVENT } from '../constants/events';
 
 const data = {
   mode: modes.MOVE,
+  zoom: 1,
+  // width and heigth contain the original width and height of the
+  // SVG container, in pixels, at zoom level 1. These will remain
+  // constant over time as the image scales up and down
+  width: 1,
+  height: 1,
   activityInProgress: false,
   annotations: [],
 };
@@ -15,12 +21,27 @@ class AppStore extends OpenSeadragon.EventSource {
     return data.annotations;
   }
 
+  // multiplying the original width in pixels by the current
+  // zoom level gives us the image width in pixels at the moment
+  getWidth() {
+    return data.width * data.zoom;
+  }
+
+  // idem for the heigth
+  getHeight() {
+    return data.height * data.zoom;
+  }
+
   getLast() {
     return data.annotations[data.annotations.length - 1];
   }
 
   getMode() {
     return data.mode;
+  }
+
+  getZoomLevel() {
+    return data.zoom;
   }
 
   isActivityInProgress() {
@@ -50,6 +71,14 @@ Dispatcher.register((action) => {
 
     case types.ANNOTATIONS_RESET:
       data.annotations = action.annotations;
+      break;
+
+    case types.ZOOM_UPDATE:
+      data.zoom = action.zoom;
+      break;
+
+    case types.INITIALIZE:
+      extend(data, action.options);
       break;
   }
   Store.raiseEvent(CHANGE_EVENT);
