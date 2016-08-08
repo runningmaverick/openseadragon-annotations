@@ -1,7 +1,6 @@
 import types from '../constants/actionTypes';
-import modes from '../constants/modes';
 
-export default function leaveCanvas(Dispatcher, Store, options) {
+export default function leaveCanvas(Dispatcher, options) {
   Dispatcher.dispatch({
     type: types.INITIALIZE,
     options,

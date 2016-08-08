@@ -36,15 +36,15 @@ export function generateAnnotations() {
 }
 
 export function generatePath() {
-  const x = randomNumber(100);
-  const y = randomNumber(100);
+  const x = random(100);
+  const y = random(100);
   const path = shapesFactory.getPath(x, y);
   for (let i = 0; i < 10; i++) {
-    path[1].d += ` L ${randomNumber(100)} ${randomNumber(100)}`;
+    path[1].d += ` L ${random(100)} ${random(100)}`;
   }
   return path;
 }
 
-function randomNumber(max) {
+function random(max) {
   return Math.floor((Math.random() * max * 100)) / 100;
 }

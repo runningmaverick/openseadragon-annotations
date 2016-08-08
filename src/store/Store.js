@@ -10,8 +10,8 @@ const data = {
   // width and heigth contain the original width and height of the
   // SVG container, in pixels, at zoom level 1. These will remain
   // constant over time as the image scales up and down
-  width: 1,
-  height: 1,
+  width: 0,
+  height: 0,
   activityInProgress: false,
   annotations: [],
 };
@@ -63,6 +63,12 @@ Dispatcher.register((action) => {
 
     case types.ANNOTATIONS_CREATE:
       data.annotations.push(action.annotation);
+      break;
+
+    case types.ANNOTATIONS_DELETE:
+      action.annotations.sort().reverse().forEach((value) => {
+        data.annotations.splice(value, 1);
+      });
       break;
 
     case types.ANNOTATIONS_UPDATE_LAST:
