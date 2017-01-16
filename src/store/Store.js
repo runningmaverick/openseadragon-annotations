@@ -8,9 +8,14 @@ import {
   ANNOTATIONS_RESET,
   ZOOM_UPDATE,
   INITIALIZE,
+  VIEWPORT_UPDATE,
+  SELECTION_UPDATE,
+  DELETE_UPDATE,
+  COMMENT_UPDATE,
 } from '../constants/actionTypes';
 import { MOVE } from '../constants/modes';
 import { CHANGE_EVENT } from '../constants/events';
+import shapesFactory from '../utils/shapesFactory';
 
 const data = {
   mode: MOVE,
@@ -22,12 +27,50 @@ const data = {
   height: 0,
   activityInProgress: false,
   annotations: [],
+  comments:[],
+  selected:null,
+  commentDialogShow: false,
+  callback:null,
 };
 
 class AppStore extends OpenSeadragon.EventSource {
   getAll() {
     return data.annotations;
   }
+
+  getAnnotationsAndComments(){
+    var arr = []
+    data.annotations.forEach(function(item){
+        var id = item[1]['id'];
+        if (id){
+          var comment = item[1]['comment'];
+          if(!comment){
+            comment = "";
+          }
+          var obj = {shape:item[0], points:item[1]['points'], comment: comment}
+          arr.push(obj);
+        }
+    });
+    return arr;
+  }
+
+  translateAnnotationsAndComments(annotations){
+      var arr = [];
+      annotations.forEach(function(item){
+        var type = item.shape;
+        var points = item.points;
+        var comment = item.comment;
+        var polygon = shapesFactory.getPath(0,0);
+        polygon[1]['points'] = points;
+        if(comment){
+          polygon[1]['comment'] = comment;
+        }
+        arr.push(polygon);
+
+      })
+      return arr;
+  }
+
 
   // multiplying the original width in pixels by the current
   // zoom level gives us the image width in pixels at the moment
@@ -42,6 +85,20 @@ class AppStore extends OpenSeadragon.EventSource {
 
   getLast() {
     return data.annotations[data.annotations.length - 1];
+  }
+
+  getById(id){
+    return data.annotations.find(function(item){
+        return item[1].id === id
+    })
+  }
+
+  removeById(id){
+    var item = this.getById(id)
+    if(item){
+      var index = data.annotations.indexOf(item);
+      data.annotations.splice(index, 1);
+    }
   }
 
   getMode() {
@@ -62,6 +119,26 @@ class AppStore extends OpenSeadragon.EventSource {
 
   isActivityInProgress() {
     return data.activityInProgress;
+  }
+
+  isShowCommentDialog(){
+    return data.commentDialogShow;
+
+  }
+
+  getSelected(){
+    return data.selected;
+  }
+
+  getComment(){
+    if(data.selected){
+      var ann = Store.getById(data.selected);
+        if (ann) {
+          var comment = ann[1].comment;
+          if(comment)  return comment;
+        }
+    }
+    return "";
   }
 }
 
@@ -95,6 +172,25 @@ Dispatcher.register((action) => {
 
     case INITIALIZE:
       extend(data, action.options);
+      break;
+
+    case VIEWPORT_UPDATE:
+      data.width = action.width;
+      data.height = action.height;
+      break;
+
+    case SELECTION_UPDATE:
+      data.selected = action.selected;
+      break;
+    case DELETE_UPDATE:
+      Store.removeById(data.selected)
+      data.selected = null;
+      break;
+    case COMMENT_UPDATE:
+      var ann = Store.getById(data.selected);
+      if(ann){
+        ann[1].comment = action.comment;
+      }
       break;
   }
   Store.raiseEvent(CHANGE_EVENT);

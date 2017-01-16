@@ -5,6 +5,7 @@ import leaveCanvas from '../actions/leaveCanvas';
 import move from '../actions/move';
 import press from '../actions/press';
 import release from '../actions/release';
+import select from '../actions/select';
 import { CHANGE_EVENT } from '../constants/events';
 import { STROKE_SIZE } from '../constants/graphical';
 import { convertWidth, convertHeight } from '../utils/convert';
@@ -27,8 +28,8 @@ export default class Annotations extends Component {
     const x = convertWidth.toPercent(offsetX);
     const y = convertHeight.toPercent(offsetY);
     return [
-      Math.round(x * 100) / 100,
-      Math.round(y * 100) / 100,
+      Math.round(x * 100),
+      Math.round(y * 100),
     ];
   }
 
@@ -60,6 +61,15 @@ export default class Annotations extends Component {
     }
   }
 
+  handleClick(e) {
+    if (!Store.isActivityInProgress()){
+        if(e.target){
+            select(e.target.id, Dispatcher, Store);
+        }
+    }
+  }
+
+
   render() {
     return (
       <svg
@@ -71,6 +81,7 @@ export default class Annotations extends Component {
         onMouseMove={this.handleMouseMove.bind(this)}
         onMouseUp={this.handleMouseUp.bind(this)}
         onPointerUp={this.handleMouseUp.bind(this)}
+        onClick={this.handleClick.bind(this)}
       >
         { this.state.annotations.map(createAnnotations) }
       </svg>
@@ -106,7 +117,7 @@ const svgProperties = {
   xmlns: 'http://www.w3.org/2000/svg',
   version: '1.1',
   preserveAspectRatio: 'none',
-  viewBox: '0 0 100 100',
+  viewBox: '0 0 10000 10000',
   width: '100%',
   height: '100%',
 };

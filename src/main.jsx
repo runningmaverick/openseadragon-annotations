@@ -1,6 +1,7 @@
 import OpenSeadragon, { Rect, ControlAnchor } from 'OpenSeadragon';
 import { h, render } from 'preact';
 import Annotations from './components/Annotations';
+import CommentDialog from './components/CommentDialog';
 import Store from './store/Store';
 import Dispatcher from './dispatcher/Dispatcher';
 import { MOVE } from './constants/modes';
@@ -9,7 +10,9 @@ import initialize from './actions/initialize';
 import selectMode from './actions/selectMode';
 import cleanCanvas from './actions/cleanCanvas';
 import fillCanvasWith from './actions/fillCanvasWith';
+import DrawPolyonWithPoints from './actions/drawPolyonWithPoints';
 import zoom from './actions/zoom';
+import resize from './actions/resize';
 
 const controls = controlClasses.map((Control) => new Control());
 
@@ -29,11 +32,18 @@ OpenSeadragon.Viewer.prototype.initializeAnnotations = function init(cb) {
   const start = () => {
     zoomHandler = updateZoom;
     this.addHandler('zoom', updateZoom);
+    this.addHandler('resize', function(e){
+        console.log(e);
+        resize(e.newContainerSize.x, e.newContainerSize.y);
+    })
 
     const bounds = this.world.getHomeBounds();
     const rect = new Rect(0, 0, bounds.width, bounds.height);
     overlay = render(<Annotations />);
     this.addOverlay(overlay, rect);
+
+    render(<CommentDialog />, document.body);
+
 
     const currentZoom = this.viewport.getZoom();
     const boundingClientRect = overlay.getBoundingClientRect();
@@ -41,12 +51,15 @@ OpenSeadragon.Viewer.prototype.initializeAnnotations = function init(cb) {
       zoom: currentZoom,
       width: boundingClientRect.width,
       height: boundingClientRect.height,
+      callback: cb,
     }, Dispatcher);
 
     controls.forEach((control) => {
-      this.addControl(control.btn.element, {
-        anchor: ControlAnchor.BOTTOM_LEFT,
-      });
+	      this.buttons.buttons.push(control.btn);
+        this.buttons.element.appendChild(control.btn.element);
+      // this.addControl(control.btn.element, {
+      //   anchor: ControlAnchor.BOTTOM_LEFT,
+      // });
     });
 
     // clean up the listener that triggers this start
@@ -55,7 +68,7 @@ OpenSeadragon.Viewer.prototype.initializeAnnotations = function init(cb) {
       openHandler = null;
     }
     isPluginActive = true;
-    if (cb) { cb(); }
+    //if (cb) { cb(); }
   };
 
   if (isPluginActive) {
@@ -120,6 +133,13 @@ const set = ifPluginIsActive((annotations) => {
   fillCanvasWith(annotations, Dispatcher);
 });
 
+const getAnnotationsAndComments = ifPluginIsActive(()=> Store.getAnnotationsAndComments());
+
+const setPointsAndComments = ifPluginIsActive((annotations) => {
+   var arr = Store.translateAnnotationsAndComments(annotations);
+   fillCanvasWith(arr, Dispatcher);
+})
+
 const clean = ifPluginIsActive(() => {
   cleanCanvas(Dispatcher);
 });
@@ -136,4 +156,4 @@ function ifPluginIsActive(fn) {
   };
 }
 
-export { get, set, clean };
+export { get, set, clean, setPointsAndComments, getAnnotationsAndComments };

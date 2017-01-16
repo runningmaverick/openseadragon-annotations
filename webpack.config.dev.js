@@ -12,7 +12,9 @@ module.exports = {
   },
   entry: path.join(__dirname, 'src/main.jsx'),
   output: {
-    path: path.resolve(__dirname, 'dist/'),
+    ///Users/xiaoxin/myworkspace/py/deepzoom/static
+    //path: path.resolve(__dirname, 'dist/'),
+    path: '/Users/xiaoxin/myworkspace/py/deepzoom/static',
     filename: 'openseadragon-annotations.js',
     libraryTarget: 'var',
     library: ['OpenSeadragon', 'Viewer', 'prototype', 'annotations'],

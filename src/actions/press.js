@@ -15,6 +15,5 @@ export default function press(x, y, Dispatcher, Store) {
         annotation: shapesFactory.getPath(x, y),
       });
       break;
-
   }
 }

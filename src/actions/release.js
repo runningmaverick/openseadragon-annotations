@@ -1,5 +1,5 @@
-import { ACTIVITY_UPDATE } from '../constants/actionTypes';
-import { DRAW } from '../constants/modes';
+import { ACTIVITY_UPDATE, MODE_UPDATE } from '../constants/actionTypes';
+import { DRAW, MOVE } from '../constants/modes';
 
 export default function release(Dispatcher, Store) {
   switch (Store.getMode()) {
@@ -9,7 +9,13 @@ export default function release(Dispatcher, Store) {
         type: ACTIVITY_UPDATE,
         inProgress: false,
       });
-      break;
 
+      if (Store.getMode() !== MOVE) {
+          Dispatcher.dispatch({
+            type: MODE_UPDATE,
+            mode: MOVE,
+          });
+        }
+      break;
   }
 }
