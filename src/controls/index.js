@@ -5,5 +5,5 @@ import Delete from './Delete';
 export default [
   Move,
   Draw,
-  Delete,
+  // Delete,
 ];

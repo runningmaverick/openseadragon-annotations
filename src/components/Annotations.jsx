@@ -23,10 +23,11 @@ export default class Annotations extends Component {
 
   coords(e) {
     const rect = this.base.getBoundingClientRect();
+    console.log(rect);
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
-    const x = convertWidth.toPercent(offsetX);
-    const y = convertHeight.toPercent(offsetY);
+    const x = convertWidth.toPercent(offsetX, rect.width);
+    const y = convertHeight.toPercent(offsetY, rect.height);
     return [
       Math.round(x * 100),
       Math.round(y * 100),

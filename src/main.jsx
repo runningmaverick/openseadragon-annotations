@@ -32,18 +32,14 @@ OpenSeadragon.Viewer.prototype.initializeAnnotations = function init(cb) {
   const start = () => {
     zoomHandler = updateZoom;
     this.addHandler('zoom', updateZoom);
-    this.addHandler('resize', function(e){
-        console.log(e);
-        resize(e.newContainerSize.x, e.newContainerSize.y);
-    })
+
 
     const bounds = this.world.getHomeBounds();
     const rect = new Rect(0, 0, bounds.width, bounds.height);
     overlay = render(<Annotations />);
     this.addOverlay(overlay, rect);
 
-    render(<CommentDialog />, document.body);
-
+    render(<CommentDialog />, this.element);
 
     const currentZoom = this.viewport.getZoom();
     const boundingClientRect = overlay.getBoundingClientRect();
@@ -53,6 +49,15 @@ OpenSeadragon.Viewer.prototype.initializeAnnotations = function init(cb) {
       height: boundingClientRect.height,
       callback: cb,
     }, Dispatcher);
+
+
+    var that = this;
+
+    this.addHandler('resize', function(e){
+    
+        var bounds = overlay.getBoundingClientRect();
+        resize(bounds.width, bounds.height, zoom, Dispatcher);
+    })
 
     controls.forEach((control) => {
 	      this.buttons.buttons.push(control.btn);
@@ -133,6 +138,10 @@ const set = ifPluginIsActive((annotations) => {
   fillCanvasWith(annotations, Dispatcher);
 });
 
+const setLabels = ifPluginIsActive((labels) => {
+  Store.setAnnotationLabel(labels);
+});
+
 const getAnnotationsAndComments = ifPluginIsActive(()=> Store.getAnnotationsAndComments());
 
 const setPointsAndComments = ifPluginIsActive((annotations) => {
@@ -156,4 +165,4 @@ function ifPluginIsActive(fn) {
   };
 }
 
-export { get, set, clean, setPointsAndComments, getAnnotationsAndComments };
+export { get, set, clean, setPointsAndComments, getAnnotationsAndComments , setLabels};

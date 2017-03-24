@@ -1,8 +1,8 @@
 import Store from '../store/Store';
 
 const convertWidth = {
-  toPercent(horizontalMeasureInPixels) {
-    const totalImageWidthInPixels = Store.getWidth();
+  toPercent(horizontalMeasureInPixels, width) {
+    const totalImageWidthInPixels = width;//Store.getWidth();
     if (totalImageWidthInPixels === 0) { return 0; } // image not yet initialized
     return (horizontalMeasureInPixels * 100) / totalImageWidthInPixels;
   },
@@ -11,11 +11,12 @@ const convertWidth = {
     if (totalImageWidthInPixels === 0) { return 0; } // image not yet initialized
     return (horizontalMeasureAsPercentage * totalImageWidthInPixels) / 100;
   },
+  
 };
 
 const convertHeight = {
-  toPercent(verticalMeasureInPixels) {
-    const totalImageHeightInPixels = Store.getHeight();
+  toPercent(verticalMeasureInPixels, height) {
+    const totalImageHeightInPixels = height;//Store.getHeight();
     if (totalImageHeightInPixels === 0) { return 0; } // image not yet initialized
     return (verticalMeasureInPixels * 100) / totalImageHeightInPixels;
   },
