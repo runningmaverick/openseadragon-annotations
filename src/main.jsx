@@ -149,6 +149,10 @@ const setPointsAndComments = ifPluginIsActive((annotations) => {
    fillCanvasWith(arr, Dispatcher);
 })
 
+const setImageProp = ifPluginIsActive((imageProp) => {
+   Store.setImageProp(imageProp);
+})
+
 const clean = ifPluginIsActive(() => {
   cleanCanvas(Dispatcher);
 });
@@ -165,4 +169,4 @@ function ifPluginIsActive(fn) {
   };
 }
 
-export { get, set, clean, setPointsAndComments, getAnnotationsAndComments , setLabels};
+export { get, set, clean, setPointsAndComments, getAnnotationsAndComments , setLabels, setImageProp};

@@ -31,10 +31,13 @@ export default class CommentDialog extends Component {
     }
 
     componentDidMount() {
+        this.value = "";
         Store.addHandler(CHANGE_EVENT, () => {
             var ops = extend(this.getAbsoluteLocation())
             this.setState(ops);
             this.value = Store.getComment();
+            this.length = Store.getLength();
+            this.area = Store.getArea();
         });
     }
 
@@ -87,12 +90,16 @@ export default class CommentDialog extends Component {
 		);*/
         
 
+        var prop = this.getAbsoluteLocation();
 
         let menuOptions = {
             isOpen: this.state.isMenuOpen,
             close: this.close.bind(this),
-            toggle: <button type="button" onClick={this.toggle.bind(this)}>{this.value}</button>,
+            toggle: <button type="button" onClick={this.toggle.bind(this)}>{this.value!=""?this.value:"单击选择"}</button>,
             align: 'left',
+            upwards: prop.upwards,
+            size: 'sm',
+            inverse: true,
         };
         const nestedProps = {
             toggle: <a href="#">其他&gt;</a>,
@@ -104,13 +111,17 @@ export default class CommentDialog extends Component {
 
             return (
                 <div id="comment-dialog" class="popover" style="width:300px" style={this.state.styles}>
-                    标签:
+                    <div style="padding:5px;">标注长度:{Math.round(this.length)}μm&nbsp;面积:{Math.round(this.area)}μm<sup>2</sup></div>
+                    <div style="padding:5px;">标签:
                 <DropdownMenu {...menuOptions}>
                     {li}
                     <NestedDropdownMenu {...nestedProps}>
                         {liSub}
                     </NestedDropdownMenu>
+                    <li role="separator" className="separator" />
+                     <li><a href="#" onClick={this.onDeleteClick.bind(this)}>删除</a></li>
                 </DropdownMenu>
+                </div>
                 </div>
             )
         }else{
@@ -151,10 +162,16 @@ export default class CommentDialog extends Component {
                 offsetTop += element.offsetTop; 
                 offsetLeft += element.offsetLeft; 
             } 
-            offsetTop -= 80;
+            offsetTop -= 40;
+            var upwardsPercent = offsetTop / rc.bottom;
+            var upwards = false;
+            if(upwardsPercent > 0.6){
+                upwards = true;
+            }
+
             var o = { absoluteTop: offsetTop, absoluteLeft: offsetLeft, 
                 offsetWidth: offsetWidth, offsetHeight: offsetHeight }; 
-            return {styles: {top: offsetTop, left: offsetLeft}, isOpen : true};
+            return {styles: {top: offsetTop, left: offsetLeft}, isOpen : true, upwards : upwards};
         }
         return {isOpen: false};
     }

@@ -32,6 +32,7 @@ const data = {
   selected:null,
   commentDialogShow: true,
   callback:null,
+  imageProp:null,
 };
 
 class AppStore extends OpenSeadragon.EventSource {
@@ -55,12 +56,93 @@ class AppStore extends OpenSeadragon.EventSource {
     return arr;
   }
 
+  ppmRatioX(){
+    //"{"viewbox":{"x":10000,"y":10000},"imageSize":{"x":20480,"y":17408}}"
+    var prop = data.imageProp;
+    prop.imageSize.x;
+    prop.imageSize.y;
+    prop.viewbox.x;
+    prop.viewbox.y;
+    prop.pixelsPerMeter;
+    return (prop.imageSize.x / prop.viewbox.x) * prop.mpp;
+  }
+
+  ppmRatioY(){
+    var prop = data.imageProp;
+    prop.imageSize.x;
+    prop.imageSize.y;
+    prop.viewbox.x;
+    prop.viewbox.y;
+    return (prop.imageSize.y / prop.viewbox.y) * prop.mpp;
+  }
+
+  caculateLength(points){
+    //M9 4 L6 7 L6 7 L3 11
+
+    var arr = points.split(" ");
+    var length = 0;
+    var lastX  = -1;
+    var lastY = -1;
+    for(var i = 0; i < arr.length; i = i + 2){
+      var x = arr[i];
+      var y = arr[i+1];
+      x = x.replace('M', '').replace('L', '');
+      x = parseInt(x);
+      y = parseInt(y);
+
+      if(lastX == -1 || lastY == -1){
+        lastX = x;
+        lastY = y;
+        continue;
+      }
+
+      length += Math.sqrt(Math.pow((lastY - y) * this.ppmRatioY(), 2) + Math.pow((lastX - x) * this.ppmRatioX(), 2));
+      lastX = x;
+      lastY = y;
+      
+    }
+    return length;
+  }
+
+  caculateArea(points){
+    var area = 0;
+    var arr = points.split(" ");
+    var length = 0;
+    var lastX  = -1;
+    var lastY = -1;
+    
+
+    var pts = [];
+    for(var i = 0;i < arr.length; i = i + 2){
+      var x = arr[i];
+      var y = arr[i+1]; 
+      x = x.replace('M', '').replace('L', '');
+      x = parseInt(x) * this.ppmRatioX();
+      y = parseInt(y) * this.ppmRatioY();
+      pts.push({x,y});
+    }
+    var len = pts.length;
+    var area=0,len=pts.length;
+    for(var i=0;i<len;++i){
+      var p1 = pts[i], p2=pts[(i-1+len)%len];
+      area += (p2.x+p1.x) * (p2.y-p1.y);
+    }
+    return Math.abs(area/2);
+
+  }
+
+
+
   setAnnotationLabel(labels){
     data.labels = labels;
   }
 
   getAnnotationLabel(){
     return data.labels;
+  }
+
+  setImageProp(prop){
+    data.imageProp = prop;
   }
 
   translateAnnotationsAndComments(annotations){
@@ -149,6 +231,27 @@ class AppStore extends OpenSeadragon.EventSource {
     }
     return "";
   }
+
+  getLength(){
+    if(data.selected){
+      var ann = Store.getById(data.selected);
+        if (ann) {
+          var length = this.caculateLength(ann[1]['d']);
+          return length;
+        }
+    }
+  }
+
+  getArea(){
+    if(data.selected){
+      var ann = Store.getById(data.selected);
+        if (ann) {
+          var area = this.caculateArea(ann[1]['d']);
+          return area;
+        }
+    }
+  }
+
 }
 
 const Store = new AppStore();
