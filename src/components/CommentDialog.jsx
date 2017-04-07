@@ -95,11 +95,11 @@ export default class CommentDialog extends Component {
         let menuOptions = {
             isOpen: this.state.isMenuOpen,
             close: this.close.bind(this),
-            toggle: <button type="button" onClick={this.toggle.bind(this)}>{this.value!=""?this.value:"单击选择"}</button>,
+            toggle: <input id="label_input" type="text" style="width:200px" onClick={this.toggle.bind(this)} value={this.value} placeholder="单击选择或者输入标注" onKeyDown={this.onInputChange.bind(this)}/>, //<button type="button" onClick={this.toggle.bind(this)}>{this.value!=""?this.value:"单击选择"}</button>,
             align: 'left',
             upwards: prop.upwards,
             size: 'sm',
-            inverse: true,
+            //inverse: true,
         };
         const nestedProps = {
             toggle: <a href="#">其他&gt;</a>,
@@ -128,6 +128,19 @@ export default class CommentDialog extends Component {
             return null;
         }
 	}
+
+
+    onInputChange(event){
+        if(event.keyCode==13){
+            var label_input_el = document.getElementById("label_input");
+            var value = label_input_el.value;
+            if(value){
+                this.onOkClick(value);
+            }
+        }
+    }
+
+
 
     onOkClick(value) {
         console.log(value);
