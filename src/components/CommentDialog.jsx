@@ -95,7 +95,7 @@ export default class CommentDialog extends Component {
         let menuOptions = {
             isOpen: this.state.isMenuOpen,
             close: this.close.bind(this),
-            toggle: <input id="label_input" type="text" style="width:200px" onClick={this.toggle.bind(this)} value={this.value} placeholder="单击选择或者输入标注" onKeyDown={this.onInputChange.bind(this)}/>, //<button type="button" onClick={this.toggle.bind(this)}>{this.value!=""?this.value:"单击选择"}</button>,
+            toggle: <div><input id="label_input" type="text" style="width:160px" onClick={this.toggle.bind(this)} value={this.value} placeholder="单击选择或者输入标注" onKeyDown={this.onInputChange.bind(this)}/>&nbsp;<button onClick={this.onDeleteClick.bind(this)}>删除</button></div>, //<button type="button" onClick={this.toggle.bind(this)}>{this.value!=""?this.value:"单击选择"}</button>,
             align: 'left',
             upwards: prop.upwards,
             size: 'sm',
@@ -118,8 +118,6 @@ export default class CommentDialog extends Component {
                     <NestedDropdownMenu {...nestedProps}>
                         {liSub}
                     </NestedDropdownMenu>
-                    <li role="separator" className="separator" />
-                     <li><a href="#" onClick={this.onDeleteClick.bind(this)}>删除</a></li>
                 </DropdownMenu>
                 </div>
                 </div>
@@ -164,7 +162,7 @@ export default class CommentDialog extends Component {
     { 
         var id = Store.getSelected()
         if(id){
-            var element = document.getElementById(id);
+            var element = document.getElementById(id); 
             var rc = element.getBoundingClientRect();
             var offsetTop = rc.top;
             var offsetLeft = rc.left;
@@ -181,6 +179,9 @@ export default class CommentDialog extends Component {
             if(upwardsPercent > 0.6){
                 upwards = true;
             }
+
+            offsetTop = Math.max(50, offsetTop);
+            offsetLeft = Math.max(50, offsetLeft);
 
             var o = { absoluteTop: offsetTop, absoluteLeft: offsetLeft, 
                 offsetWidth: offsetWidth, offsetHeight: offsetHeight }; 
