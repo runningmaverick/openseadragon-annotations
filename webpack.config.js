@@ -7,6 +7,11 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     extensions: ['', '.jsx', '.js'],
+    "alias": {
+      "react": "preact-compat",
+      "react-dom": "preact-compat",
+      "react-addons-css-transition-group":"preact-css-transition-group"
+    },
   },
   entry: path.join(__dirname, 'src/main.jsx'),
   output: {

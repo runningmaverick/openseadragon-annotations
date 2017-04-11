@@ -19,7 +19,7 @@ module.exports = {
   output: {
     ///Users/xiaoxin/myworkspace/py/deepzoom/static
     //path: path.resolve(__dirname, 'dist/'),
-    path: '/Users/xiaoxin/myworkspace/py/deepzoom/static',
+    path: '/Users/jacky/workspace/deepcare-deepzoom/app/static',
     filename: 'openseadragon-annotations.js',
     libraryTarget: 'var',
     library: ['OpenSeadragon', 'Viewer', 'prototype', 'annotations'],

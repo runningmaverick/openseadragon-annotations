@@ -89,6 +89,9 @@
     "openseadragon": "^2.2.1"
   },
   "dependencies": {
-
+    "openseadragon": "^2.2.1",
+    "react": "^15.5.3",
+    "react-addons-css-transition-group": "^15.5.2",
+    "react-dom": "^15.5.3"
   }
 }
