@@ -8,7 +8,7 @@ export default function select(selectedId, Dispatcher, Store) {
      var last = Store.getSelected();
      if(last){
         var ann = Store.getById(last);
-        ann[1]["stroke-width"] = STROKE_SIZE;
+        ann[1]["stroke-width"] = ann[1]["stroke-width"] - 2;;
      }
      var current = Store.getById(selectedId);
      if(current){

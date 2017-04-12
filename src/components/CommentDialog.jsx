@@ -64,7 +64,6 @@ export default class CommentDialog extends Component {
 
 
 	render() {
-        console.log("CommentDialog render");
         var labels = Store.getAnnotationLabel();
         var options = [];
         var li = [];

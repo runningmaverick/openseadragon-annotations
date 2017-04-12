@@ -23,7 +23,6 @@ export default class Annotations extends Component {
 
   coords(e) {
     const rect = this.base.getBoundingClientRect();
-    console.log(rect);
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
     const x = convertWidth.toPercent(offsetX, rect.width);
@@ -35,7 +34,7 @@ export default class Annotations extends Component {
   }
 
   handleMouseDown(e) {
-    if (Store.notInMoveMode()) {
+    if (Store.notInMoveMode() && !Store.isActivityInProgress()) {
       e.stopPropagation();
       press(...this.coords(e), Dispatcher, Store);
     }

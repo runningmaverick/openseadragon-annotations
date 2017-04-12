@@ -188,7 +188,10 @@ class AppStore extends OpenSeadragon.EventSource {
     var item = this.getById(id)
     if(item){
       var index = data.annotations.indexOf(item);
+      console.log('index:', index);
+      console.log('anns:', data.annotations);
       data.annotations.splice(index, 1);
+      console.log('anns:', data.annotations);
     }
   }
 
@@ -267,6 +270,7 @@ Dispatcher.register((action) => {
       break;
 
     case ANNOTATIONS_CREATE:
+      console.log('a create');
       data.annotations.push(action.annotation);
       break;
 

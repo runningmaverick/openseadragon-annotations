@@ -15,7 +15,8 @@ export default class Comment {
     constructor() {
         this.btn = new Button(
     {
-        Tooltip: 'Comment',
+        mode: 'COMMENT',
+        tooltip: 'Comment',
         srcRest: drawRest,
         srcGroup: drawGroupHover,
         srcHover: drawHover,

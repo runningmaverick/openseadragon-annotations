@@ -15,7 +15,8 @@ export default class Delete {
     constructor() {
         this.btn = new Button(
     {
-        Tooltip: 'Delete',
+        mode: 'DELETE',
+        tooltip: 'Delete',
         srcRest: drawRest,
         srcGroup: drawGroupHover,
         srcHover: drawHover,

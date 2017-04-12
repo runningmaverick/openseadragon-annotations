@@ -15,5 +15,15 @@ export default function press(x, y, Dispatcher, Store) {
         annotation: shapesFactory.getPath(x, y),
       });
       break;
+    case 'LINE':
+      Dispatcher.dispatch({
+        type: ACTIVITY_UPDATE,
+        inProgress: true,
+      });
+      Dispatcher.dispatch({
+        type: ANNOTATIONS_CREATE,
+        annotation: shapesFactory.getLine(x, y),
+      });
+      break;
   }
 }

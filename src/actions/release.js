@@ -17,5 +17,18 @@ export default function release(Dispatcher, Store) {
           });
         }
       break;
+    case 'LINE':
+      Dispatcher.dispatch({
+        type: ACTIVITY_UPDATE,
+        inProgress: false,
+      });
+
+      if (Store.getMode() !== MOVE) {
+          Dispatcher.dispatch({
+            type: MODE_UPDATE,
+            mode: MOVE,
+          });
+        }
+      break;
   }
 }
