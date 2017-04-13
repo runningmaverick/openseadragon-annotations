@@ -49,7 +49,11 @@ class AppStore extends OpenSeadragon.EventSource {
           if(!comment){
             comment = "";
           }
-          var obj = {shape:item[0], points:item[1]['d'], comment: comment}
+          if (item[0] == 'line') {
+              var obj = {shape:item[0], 'x1': item[1]['x1'], 'y1': item[1]['y1'], 'x2': item[1]['x2'], 'y2': item[1]['y2'], comment: comment}
+          } else {
+              var obj = {shape:item[0], points:item[1]['d'], comment: comment}
+          }
           arr.push(obj);
         }
     });
@@ -151,8 +155,16 @@ class AppStore extends OpenSeadragon.EventSource {
         var type = item.shape;
         var points = item.points;
         var comment = item.comment;
-        var polygon = shapesFactory.getPath(0,0);
-        polygon[1]['d'] = points;
+        if (type === 'line') {
+            var polygon = shapesFactory.getLine(0, 0);
+            polygon[1]['x1'] = item['x1']; 
+            polygon[1]['x2'] = item['x2']; 
+            polygon[1]['y1'] = item['y1']; 
+            polygon[1]['y2'] = item['y2']; 
+        } else {
+            var polygon = shapesFactory.getPath(0,0);
+            polygon[1]['d'] = points;
+        }
         if(comment){
           polygon[1]['comment'] = comment;
         }
@@ -239,8 +251,14 @@ class AppStore extends OpenSeadragon.EventSource {
     if(data.selected){
       var ann = Store.getById(data.selected);
         if (ann) {
-          var length = this.caculateLength(ann[1]['d']);
-          return length;
+            if (ann[0] === 'line') {
+                return Math.sqrt(
+                    (ann[1]['x1'] - ann[1]['x2']) * (ann[1]['x1'] - ann[1]['x2']) +
+                    (ann[1]['y1'] - ann[1]['y2']) * (ann[1]['y1'] - ann[1]['y2']));
+            } else {
+              var length = this.caculateLength(ann[1]['d']);
+              return length;
+            }
         }
     }
   }
@@ -249,8 +267,12 @@ class AppStore extends OpenSeadragon.EventSource {
     if(data.selected){
       var ann = Store.getById(data.selected);
         if (ann) {
-          var area = this.caculateArea(ann[1]['d']);
-          return area;
+            if (ann[0] === 'line') {
+                return 1;
+            } else {
+              var area = this.caculateArea(ann[1]['d']);
+              return area;
+            }
         }
     }
   }

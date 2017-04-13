@@ -12,7 +12,7 @@ export default function select(selectedId, Dispatcher, Store) {
      }
      var current = Store.getById(selectedId);
      if(current){
-        current[1]["stroke-width"] = STROKE_SIZE + 2;
+        current[1]["stroke-width"] = current[1]["stroke-width"] + 2;
      }
 
      Dispatcher.dispatch({

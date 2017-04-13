@@ -23,11 +23,14 @@ const shapesFactory = {
   },
   getLine(x, y) {
     return [
-      'path',
+      'line',
       {
         fill: STROKE_LINE_COLOR,
         'fill-opacity': 0.1,
-        d: `M${x} ${y}`,
+        'x1': x,
+        'y1': y,
+        'x2': x,
+        'y2': y,
         stroke: STROKE_LINE_COLOR,
         'stroke-width': STROKE_LINE_WIDTH,
         'stroke-linejoin': 'round',
