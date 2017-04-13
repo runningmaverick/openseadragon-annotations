@@ -265,7 +265,7 @@ class AppStore extends OpenSeadragon.EventSource {
       var ann = Store.getById(data.selected);
         if (ann) {
             if (ann[0] === 'line') {
-                return 1;
+                return 0;
             } else {
               var area = this.caculateArea(ann[1]['d']);
               return area;
